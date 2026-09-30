@@ -1,3 +1,4 @@
 # venv 
-venv/
-*.avi
+.venv/
+
+/out.avi
