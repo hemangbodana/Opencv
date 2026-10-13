@@ -1,0 +1,178 @@
+Based on your YOLO + OpenCV danger-zone assignment, your exam will likely test the same core concepts with a slightly different real-world scenario. The most important skills are object detection, bounding-box processing, point-in-polygon testing, consecutive-frame logic, video optimization, and saving results.
+
+Here are similar practical questions that could be asked in an exam.
+
+# 1. Most likely practical exam questions
+
+## Question 1: Restricted zone intrusion detection
+
+Very likely
+
+A restricted area on a factory floor must be monitored. Raise an alert when a person enters the area and remains there for at least 10 consecutive detections.
+
+Requirements:
+
+- Select a polygonal restricted area on the first frame.
+- Detect only people using YOLO.
+- Use the bottom-center of each bounding box to determine whether the person is inside the polygon.
+- Change the polygon color from green to red when an alert is active.
+- Save the output video and alert timestamps to a CSV file.
+
+What it tests: Your current assignment almost exactly.
+
+## Question 2: PPE detection — helmet or no helmet
+
+High priority
+
+A construction site requires workers to wear helmets. Detect workers and raise an alert if a worker is not wearing a helmet.
+
+Requirements:
+
+- Run an object detection model on video frames.
+- Detect `person` and `helmet` classes.
+- Determine whether a helmet is associated with each person.
+- Draw green boxes for compliant workers and red boxes for workers without helmets.
+- Save the annotated video and count the violations.
+
+What it tests: Multiple classes, bounding-box overlap, conditional alerts and counting.
+
+Note: You need a model trained to detect helmets; a standard YOLOv8 COCO model does not provide a dedicated helmet class.
+
+## Question 3: Vehicle entry into a restricted area
+
+A parking lot has a restricted polygon. Raise an alert when a car or motorcycle enters it.
+
+Requirements:
+
+- Select the restricted area using mouse clicks.
+- Detect cars and motorcycles.
+- Use the bottom-center of each vehicle box as its position.
+- Require three consecutive positive detections before raising an alert.
+- Save the video and violation log.
+
+What it tests: Class filtering, polygon testing and temporal confirmation.
+
+## Question 4: People counting at an entrance
+
+Count how many people cross a virtual line at a building entrance.
+
+Requirements:
+
+- Detect people in every fifth frame.
+- Draw a horizontal counting line.
+- Count a person when their feet cross the line in a specified direction.
+- Avoid counting the same person repeatedly.
+- Display the total count on the video.
+
+What it tests: Line-crossing geometry, object tracking, frame skipping and counters.
+
+## Question 5: Loitering detection
+
+Detect people who remain within a designated area for at least five seconds.
+
+Requirements:
+
+- Select a polygonal area.
+- Detect people and calculate their feet positions.
+- Track each person across frames.
+- Start a timer when a person enters the area.
+- Raise an alert if the person remains there for five seconds.
+- Reset the timer when the person leaves.
+
+What it tests: Tracking, timestamps, state management and duration calculations.
+
+## Question 6: Speed up object detection on a large video
+
+A video is 1920 × 1080 at 60 FPS. Process it efficiently while preserving the original output resolution.
+
+Requirements:
+
+- Resize frames before inference.
+- Run inference on every third frame.
+- Scale bounding boxes back to the original frame.
+- Draw detections on all output frames.
+- Save the annotated video at the original FPS and resolution.
+
+What it tests: Resizing, coordinate scaling, frame skipping and `VideoWriter`.
+
+# 2. More variations worth practising
+
+360° AI Pedestrian Detection | Riodatos
+
+Question 7: Worker–forklift proximity alert
+
+Detect people and forklifts. Raise an alert when their bounding boxes or representative positions are too close for several consecutive detections.
+
+Concepts: distance calculation, multiple classes, consecutive detections.
+
+Forklift Accident Prevention: Protecting Workers and Compliance - Top Osha Forklift Certification
+
+Question 8: Line-crossing direction detection
+
+Detect people crossing a safety line. Count entry and exit separately based on the direction of movement.
+
+Concepts: line geometry, previous and current positions, tracking.
+
+Cloud Video Analytics | Pelco Calipsa
+
+Question 9: Occupancy monitoring
+
+Count people in a selected room or polygon and display the current occupancy. Raise an alert if the count exceeds a specified limit.
+
+Concepts: polygon inclusion, counting, thresholds and visualization.
+
+IRIV EdgeAI CM5 - IR4.0 Industrial AI Controller
+
+Question 10: Defective-product detection
+
+Detect defective products on a conveyor belt using a trained object detection model. Draw red boxes around defective items and save the number of defects.
+
+Concepts: class filtering, counting, output logging and model inference.
+
+# 3. Important practical coding patterns to memorize
+
+These are the OpenCV and NumPy operations most likely to appear in variations of your assignment.
+
+| Task | Function or technique |
+| --- | --- |
+| Read video | `cv2.VideoCapture()` |
+| Read a frame | `cap.read()` |
+| Resize a frame | `cv2.resize()` |
+| Load ONNX model | `cv2.dnn.readNetFromONNX()` |
+| Prepare model input | `cv2.dnn.blobFromImage()` |
+| Run inference | `net.forward()` |
+| Remove duplicate detections | `cv2.dnn.NMSBoxes()` |
+| Draw a bounding box | `cv2.rectangle()` |
+| Draw a polygon | `cv2.polylines()` |
+| Check if a point is inside a polygon | `cv2.pointPolygonTest()` |
+| Draw the person's feet position | `cv2.circle()` |
+| Save a video | `cv2.VideoWriter()` |
+| Save results | Python `csv` module |
+| Convert frame number to seconds | `frame_idx / fps` |
+
+## 4. Common examiner follow-up questions
+
+Prepare to explain these without looking at your code.
+
+1. Why do we use the bottom-center of the bounding box instead of its center?
+2. Why is a polygon better than a rectangle for selecting an irregular danger zone?
+3. What is the purpose of Non-Maximum Suppression (NMS)?
+4. Why do we resize the frame before inference?
+5. Why must bounding-box coordinates be scaled back after resizing?
+6. What happens if we increase the confidence threshold from 0.5 to 0.8?
+7. Why do we require consecutive detections before raising an alert?
+8. How do you convert a frame number into seconds?
+9. What is the difference between object detection and object tracking?
+10. What happens if a worker leaves the zone for one sampled frame?
+11. Why must the video writer be initialized with the correct output resolution and FPS?
+12. How would you prevent two different workers from contributing to the same alert streak?
+
+# 5. Try a mock practical exam
+
+Select a question to practise
+
+ 1\. Danger-zone intrusionEasy–medium  2\. People countingMedium  3\. Loitering alertMedium–hard  4\. Worker–vehicle proximityHard Your task
+
+Select a polygon, detect people, check feet positions, require 5 consecutive positive detections, and save alert timestamps. Practise this question
+
+My recommendation: Practise Questions 1, 3, 4, 5 and 6 first. They reuse almost all the code from your current assignment. Once you understand polygon checks, coordinate scaling, frame skipping, and alert state logic, you can adapt your solution to many different practical exam scenarios.
